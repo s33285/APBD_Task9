@@ -42,6 +42,7 @@ namespace User_Panel.Models
 
     public class DashboardViewModel
     {
+        public string UserEmail { get; set; } = string.Empty;
         public List<UserNote> Notes { get; set; } = new();
         public AddNoteViewModel NewNote { get; set; } = new();
     }

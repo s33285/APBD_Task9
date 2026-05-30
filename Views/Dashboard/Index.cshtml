@@ -1,0 +1,70 @@
+﻿@model DashboardViewModel
+@{
+    ViewData["Title"] = "My Dashboard";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0"> My Dashboard</h4>
+    <span class="badge bg-secondary">Logged in as: @Model.UserEmail</span>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        @if (!Model.Notes.Any())
+        {
+            <div class="alert alert-info">
+                You have no notes yet. Add your first note.
+            </div>
+        }
+
+        @foreach (var note in Model.Notes)
+        {
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">@note.Title</h5>
+                    <p class="card-text">@note.Content</p>
+                    <small class="text-muted">
+                        Time: @note.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")
+                    </small>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="col-md-4">
+        <div class="card p-4">
+            <h5 class="mb-3"> + Add Note</h5>
+
+            @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ErrorCount > 0)
+            {
+                <div class="alert alert-danger py-2">
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <div class="small">@error.ErrorMessage</div>
+                    }
+                </div>
+            }
+
+            <form asp-action="AddNote" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    <label class="form-label">Title</label>
+                    <input type="text" name="title"
+                           value="@Model.NewNote.Title"
+                           class="form-control"
+                           placeholder="Note title" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Content</label>
+                    <textarea name="content" class="form-control"
+                              rows="4"
+                              placeholder="Write your note here...">@Model.NewNote.Content</textarea>
+                </div>
+
+                <button type="submit" style="background-color: #173063; border-color: #173063; color: #d0d0e0" class="btn w-100">Save Note</button>
+            </form>
+        </div>
+    </div>
+</div>

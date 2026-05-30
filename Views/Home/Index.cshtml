@@ -1,8 +1,25 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6 text-center">
+        <div class="card p-5">
+            <h1 class="mb-3">UserPanel</h1>
+            <p class="text-muted mb-4">
+                A simple ASP.NET Core MVC application where a user can register, log in, see a private dashboard, and open an admin page only if they have the correct role.
+            </p>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-controller="Dashboard" asp-action="Index" style="background-color: #173063; border-color: #173063; color: #d0d0e0" class="btn btn-primary btn-lg">Go to Dashboard</a>
+            }
+            else
+            {
+                <div class="d-flex gap-3 justify-content-center">
+                    <a asp-controller="Account" asp-action="Register" style="background-color: #173063; border-color: #173063; color: #d0d0e0" class="btn btn-lg text-white">Register</a>
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-outline-secondary btn-lg">Login</a>
+                </div>
+            }
+        </div>
+    </div>
 </div>

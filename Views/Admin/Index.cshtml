@@ -1,4 +1,52 @@
-﻿@page
-@model User_Panel.Views.Admin.IndexModel
+﻿@model List<User_Panel.Controllers.AdminUserRow>
 @{
+    ViewData["Title"] = "Admin Panel";
 }
+
+<div class="d-flex align-items-center mb-4 gap-3">
+    <div>
+        <h4 class="mb-0">Admin Panel</h4>
+        <small class="text-muted">Only visible to users with the Admin role</small>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <p class="text-muted mb-3">Total users: <strong>@Model.Count</strong></p>
+
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Notes</th>
+                    <th>Registered</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td class="text-muted">@user.Id</td>
+                        <td>@user.Email</td>
+                        <td>
+                            @if (user.Role == "Admin")
+                            {
+                                <span class="badge" style="background:#f59e0b;color:#173063">Admin</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">User</span>
+                            }
+                        </td>
+                        <td>@user.NoteCount</td>
+                        <td class="text-muted small">
+                            @user.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
