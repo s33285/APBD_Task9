@@ -16,39 +16,51 @@ namespace User_Panel.Controllers
 
         public IActionResult Index()
         {
+            int userId = GetUserId();
+
             var vm = new DashboardViewModel
             {
-
+                UserEmail = User.FindFirstValue(ClaimTypes.Email) ?? string.Empty,
                 Notes = _db.UserNotes
-                    .Where(n => n.AppUserId == GetUserId())
-                    .OrderByDescending(n => n.CreatedAt)
-                    .ToList(),
+                            .Where(n => n.AppUserId == userId)
+                            .OrderByDescending(n => n.CreatedAt)
+                            .ToList(),
                 NewNote = new AddNoteViewModel()
             };
             return View(vm);
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddNote(AddNoteViewModel model)
+        public async Task<IActionResult> AddNote(string title, string content)
         {
+            int userId = GetUserId();
+
+            if (string.IsNullOrWhiteSpace(title))
+                ModelState.AddModelError("title", "Title is required.");
+            if (string.IsNullOrWhiteSpace(content))
+                ModelState.AddModelError("content", "Content is required.");
+            if (title?.Length > 200)
+                ModelState.AddModelError("title", "Title can be at most 200 characters.");
+
             if (!ModelState.IsValid)
             {
                 var vm = new DashboardViewModel
                 {
+                    UserEmail = User.FindFirstValue(ClaimTypes.Email) ?? string.Empty,
                     Notes = _db.UserNotes
-                        .Where(n => n.AppUserId == GetUserId())
-                        .OrderByDescending(n => n.CreatedAt)
-                        .ToList(),
-                    NewNote = model
+                                    .Where(n => n.AppUserId == userId)
+                                    .OrderByDescending(n => n.CreatedAt)
+                                    .ToList(),
+                    NewNote = new AddNoteViewModel { Title = title ?? "", Content = content ?? "" }
                 };
                 return View("Index", vm);
             }
 
             _db.UserNotes.Add(new UserNote
             {
-                AppUserId = GetUserId(),
-                Title = model.Title,
-                Content = model.Content,
+                AppUserId = userId,
+                Title = title!.Trim(),
+                Content = content!.Trim(),
                 CreatedAt = DateTime.UtcNow
             });
 
