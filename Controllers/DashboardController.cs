@@ -35,10 +35,6 @@ namespace User_Panel.Controllers
         {
             int userId = GetUserId();
 
-            if (string.IsNullOrWhiteSpace(title))
-                ModelState.AddModelError("title", "Title is required.");
-            if (string.IsNullOrWhiteSpace(content))
-                ModelState.AddModelError("content", "Content is required.");
             if (title?.Length > 200)
                 ModelState.AddModelError("title", "Title can be at most 200 characters.");
 

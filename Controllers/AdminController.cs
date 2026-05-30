@@ -15,8 +15,27 @@ namespace User_Panel.Controllers
         {
             var users = _db.AppUsers
                 .OrderBy(u => u.CreatedAt)
+                .Select(u => new AdminUserRow
+                {
+                    Id = u.Id,
+                    Email = u.Email,
+                    Role = u.Role,
+                    CreatedAt = u.CreatedAt,
+                    NoteCount = u.Notes.Count
+                })
                 .ToList();
+
             return View(users);
         }
     }
+
+    public class AdminUserRow
+    {
+        public int Id { get; set; }
+        public string Email { get; set; } = string.Empty;
+        public string Role { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
+        public int NoteCount { get; set; }
+    }
 }
+
